@@ -82,12 +82,12 @@ public class WhatsappAPI {
      * Creates a new WhatsappAPI with the {@code configuration} and {@code manager} provided
      *
      * @param configuration the configuration
-     * @param manager the manager
+     * @param keyManager the manager
      */
-    public WhatsappAPI(@NonNull WhatsappConfiguration configuration, @NonNull WhatsappKeysManager manager) {
+    public WhatsappAPI(@NonNull WhatsappConfiguration configuration, @NonNull WhatsappKeysManager keyManager) {
         this.configuration = configuration;
-        this.manager = WhatsappDataManager.singletonInstance();
-        this.socket = new WhatsappWebSocket(configuration, manager);
+        this.manager = WhatsappDataManager.newInstance();
+        this.socket = new WhatsappWebSocket(configuration, keyManager, manager);
     }
 
     /**

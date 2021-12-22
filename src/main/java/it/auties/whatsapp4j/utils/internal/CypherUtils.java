@@ -6,6 +6,7 @@ import it.auties.whatsapp4j.media.MediaUpload;
 import it.auties.whatsapp4j.protobuf.message.model.MediaMessage;
 import it.auties.whatsapp4j.protobuf.message.model.MediaMessageType;
 import it.auties.whatsapp4j.response.model.json.JsonResponse;
+import it.auties.whatsapp4j.utils.DataManagerHolder;
 import it.auties.whatsapp4j.utils.WhatsappUtils;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -172,7 +173,11 @@ public class CypherUtils {
 
     @SneakyThrows
     public @NonNull MediaUpload mediaEncrypt(byte @NonNull [] file, @NonNull MediaMessageType type) {
-        var connection = WhatsappDataManager.singletonInstance().mediaConnection();
+        var dataManager = DataManagerHolder.DATA_MANAGER.get();
+        if(dataManager == null){
+            dataManager = WhatsappDataManager.singletonInstance();
+        }
+        var connection = dataManager.mediaConnection();
         var mediaKey = BinaryArray.random(32);
         var expandedMediaKey = hkdfExpand(mediaKey, type.key(), 112);
 

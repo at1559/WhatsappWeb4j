@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * It should not be used by multiple sessions as, being a singleton, it cannot determine and divide data coming from different sessions.
  * It should not be initialized manually.
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @Data
 @Accessors(fluent = true)
 public class WhatsappDataManager {
@@ -636,5 +636,9 @@ public class WhatsappDataManager {
 
     private void callOnListenerThread(@NonNull Runnable runnable) {
         requestsService.execute(runnable);
+    }
+
+    public static WhatsappDataManager newInstance(){
+        return new WhatsappDataManager(Executors.newSingleThreadExecutor(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Instant.now().getEpochSecond());
     }
 }

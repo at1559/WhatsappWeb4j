@@ -26,14 +26,14 @@
         <tag>whatsappweb4j-2.1.4</tag>
     </scm>
     <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>pa-releases</id>
+            <url>http://pa-nexus.thethinkacademy.com/repository/nexus-pa-release/</url>
         </repository>
+        <snapshotRepository>
+            <id>pa-snapshots</id>
+            <url>http://pa-nexus.thethinkacademy.com/repository/nexus-pa-snapshot/</url>
+        </snapshotRepository>
     </distributionManagement>
     <profiles>
         <profile>
