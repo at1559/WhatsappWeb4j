@@ -121,6 +121,10 @@ public class WhatsappAPI {
         return this;
     }
 
+    public void clear(){
+        socket.clear();
+    }
+
     /**
      * Disconnects from Whatsapp Web's WebSocket and logs out of WhatsappWeb invalidating the previous saved credentials
      * The next time the API is used, the QR code will need to be scanned again

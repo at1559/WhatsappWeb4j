@@ -266,6 +266,15 @@ public class WhatsappWebSocket {
         }
     }
 
+    @SneakyThrows
+    public void clear(){
+        pingService.shutdown();
+        if(session().isOpen()){
+            session().close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "clear"));
+            session(null);
+        }
+    }
+
     private void openConnection() {
         try{
             webSocketContainer.setDefaultMaxSessionIdleTimeout(0);
