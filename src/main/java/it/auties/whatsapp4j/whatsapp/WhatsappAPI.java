@@ -49,7 +49,7 @@ import static it.auties.whatsapp4j.utils.WhatsappUtils.*;
  */
 @Accessors(fluent = true)
 public class WhatsappAPI {
-    private final @NonNull WhatsappWebSocket socket;
+    private final @Getter @NonNull WhatsappWebSocket socket;
     private final @NonNull WhatsappConfiguration configuration;
     private final @Getter @NonNull WhatsappDataManager manager;
 

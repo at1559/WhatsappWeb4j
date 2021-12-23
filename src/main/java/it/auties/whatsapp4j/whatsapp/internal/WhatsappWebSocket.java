@@ -98,6 +98,9 @@ public class WhatsappWebSocket {
     }
 
     private void sendInitialRequest(Session session) {
+        if (loggedIn) {
+            return;
+        }
         new InitialRequest<InitialResponse>(options, whatsappKeys){}
                 .send(session)
                 .thenAccept(this::handleInitialMessage);
