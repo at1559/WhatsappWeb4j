@@ -509,8 +509,13 @@ public class WhatsappDataManager {
 
         var message = messageOpt.get();
         var statusName = firstChildNode.attrs().get("type");
-        var status = Objects.requireNonNull(MessageInfo.MessageInfoStatus.forName(statusName),
-                "Cannot process read status, unexpected value: %s".formatted(statusName));
+        var status = MessageInfo.MessageInfoStatus.forName(statusName);
+        if(status == null){
+            // todo 目前协议解析有问题，且目前没有使用"已读状态"响应，后续优化
+            return;
+        }
+        //var status = Objects.requireNonNull(MessageInfo.MessageInfoStatus.forName(statusName),
+        //       "Cannot process read status, unexpected value: %s".formatted(statusName));
         if (status.index() <= message.globalStatus().index() && status != MessageInfo.MessageInfoStatus.ERROR) {
             return;
         }

@@ -272,7 +272,7 @@ public class WhatsappWebSocket {
     @SneakyThrows
     public void clear(){
         pingService.shutdown();
-        if(session().isOpen()){
+        if(session != null && session().isOpen()){
             session().close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "clear"));
             session(null);
         }
@@ -454,9 +454,12 @@ public class WhatsappWebSocket {
             return;
         }
 
-        var contact = privateWhatsappManager.findContactByJid(res.jid())
-                .orElseThrow(() -> new IllegalArgumentException("Cannot update presence of unknown contact"));
-        handleContactPresence(res, chat, contact);
+        var contact = privateWhatsappManager.findContactByJid(res.jid());
+        if(contact.isEmpty()){
+            // 可能收到已注销账号的Contact Presence消息
+            return;
+        }
+        handleContactPresence(res, chat, contact.get());
     }
 
     private void handleContactPresence(@NonNull PresenceResponse res, @NonNull Chat chat, @NonNull Contact contact) {
