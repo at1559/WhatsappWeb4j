@@ -66,7 +66,7 @@ public class WhatsappWebSocket {
     private Session session;
     private boolean loggedIn;
     private final @NonNull WebSocketContainer webSocketContainer;
-    private final @NonNull ScheduledExecutorService pingService;
+    //private final @NonNull ScheduledExecutorService pingService;
     private final @NonNull WhatsappDataManager whatsappManager;
     private final @NonNull WhatsappDataManager privateWhatsappManager;
     private final @NonNull WhatsappKeysManager whatsappKeys;
@@ -77,7 +77,7 @@ public class WhatsappWebSocket {
     public WhatsappWebSocket(@NonNull WhatsappConfiguration options, @NonNull WhatsappKeysManager keyManager, @NonNull WhatsappDataManager privateManager) {
         this(
                 ContainerProvider.getWebSocketContainer(),
-                Executors.newSingleThreadScheduledExecutor(),
+               // Executors.newSingleThreadScheduledExecutor(),
                 WhatsappDataManager.singletonInstance(),
                 privateManager,
                 keyManager,
@@ -248,7 +248,7 @@ public class WhatsappWebSocket {
     public void connect() {
         Validate.isTrue(!loggedIn, "WhatsappAPI: Cannot establish a connection with whatsapp as one already exists", IllegalStateException.class);
         openConnection();
-        pingService.scheduleAtFixedRate(this::sendPing, 0, 1, TimeUnit.MINUTES);
+        //pingService.scheduleAtFixedRate(this::sendPing, 0, 1, TimeUnit.MINUTES);
     }
 
     @SneakyThrows
@@ -271,7 +271,6 @@ public class WhatsappWebSocket {
 
     @SneakyThrows
     public void clear(){
-        pingService.shutdown();
         if(session != null && session().isOpen()){
             session().close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "clear"));
             session(null);
@@ -288,7 +287,7 @@ public class WhatsappWebSocket {
     }
 
     @SneakyThrows
-    private void sendPing() {
+    public void sendPing() {
         session().getAsyncRemote().sendPing(ByteBuffer.allocate(0));
     }
 
