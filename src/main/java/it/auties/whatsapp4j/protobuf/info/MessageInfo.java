@@ -231,7 +231,8 @@ public class MessageInfo {
    * @return a non null string
    */
   public @NonNull String senderJid(){
-    return key.fromMe() ? MANAGER.phoneNumberJid() : Optional.ofNullable(senderJid).orElse(key.chatJid());
+    // return key.fromMe() ? MANAGER.phoneNumberJid() : Optional.ofNullable(senderJid).orElse(key.chatJid());
+    return key.fromMe() ? "me" : Optional.ofNullable(senderJid).orElse(key.chatJid());
   }
 
   /**
