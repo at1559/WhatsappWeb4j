@@ -29,4 +29,5 @@ open module whatsapp4j {
     requires transitive java.logging;
     requires static lombok;
     requires static jdk.unsupported;
+    requires slf4j.api;
 }

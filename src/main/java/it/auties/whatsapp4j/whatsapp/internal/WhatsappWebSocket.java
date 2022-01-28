@@ -35,6 +35,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -63,6 +66,7 @@ import static it.auties.whatsapp4j.utils.internal.CypherUtils.*;
 @Accessors(fluent = true)
 @ClientEndpoint(configurator = WhatsappSocketConfiguration.class)
 public class WhatsappWebSocket {
+    private static final Logger log = LoggerFactory.getLogger(WhatsappWebSocket.class);
     private Session session;
     private boolean loggedIn;
     private final @NonNull WebSocketContainer webSocketContainer;
@@ -99,6 +103,7 @@ public class WhatsappWebSocket {
 
     private void sendInitialRequest(Session session) {
         if (loggedIn) {
+            log.info("connStatus, 已登录无需重复发送init，clientId:{}", whatsappKeys.clientId());
             return;
         }
         new InitialRequest<InitialResponse>(options, whatsappKeys){}
@@ -107,10 +112,12 @@ public class WhatsappWebSocket {
     }
 
     private void handleInitialMessage(@NonNull InitialResponse response) {
+        log.info("connStatus, 收到InitialMessage，clientId:{}", whatsappKeys.clientId());
         if (!whatsappKeys.mayRestore()) {
+            log.info("connStatus, 开始定时发送二维码请求，loggedIn:{}，clientId:{}", loggedIn, whatsappKeys.clientId());
             generateQrCode(response);
         }
-
+        log.info("connStatus, 开始TakeOverRequest，loggedIn:{}，clientId:{}", loggedIn, whatsappKeys.clientId());
         new TakeOverRequest<TakeOverResponse>(options, whatsappKeys) {}
                 .send(session())
                 .thenAccept(this::solveChallenge);
@@ -141,6 +148,7 @@ public class WhatsappWebSocket {
 
     private void solveChallenge(@NonNull TakeOverResponse response) {
         if (response.status() >= 400) {
+            log.info("connStatus, 收到非法状态码，status:{},clientId:{}", response.status(), whatsappKeys.clientId());
             whatsappKeys.deleteKeysFromMemory();
             disconnect(null, false, true);
             return;
@@ -157,7 +165,7 @@ public class WhatsappWebSocket {
 
         var challenge = BinaryArray.forBase64(challengeBase64);
         var signedChallenge = hmacSha256(challenge, whatsappKeys.macKey());
-
+        log.info("connStatus, sendChallenge, clientId:{}", whatsappKeys.clientId());
         new SolveChallengeRequest<SimpleStatusResponse>(options, whatsappKeys, signedChallenge) {}
                 .send(session())
                 .thenAcceptAsync(SimpleStatusResponse::orElseThrow);
