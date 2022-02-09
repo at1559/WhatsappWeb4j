@@ -2,6 +2,7 @@ package it.auties.whatsapp4j.whatsapp;
 
 import com.google.zxing.common.BitMatrix;
 import it.auties.whatsapp4j.binary.BinaryArray;
+import it.auties.whatsapp4j.manager.WhatsappDataManager;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
@@ -66,6 +67,9 @@ public class WhatsappConfiguration {
      */
     @Default
     private final boolean async = true;
+
+
+    private final WhatsappDataManager dataManager;
 
     /**
      * Constructs a new instance of WhatsappConfiguration with default options

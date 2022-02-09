@@ -86,7 +86,7 @@ public class WhatsappAPI {
      */
     public WhatsappAPI(@NonNull WhatsappConfiguration configuration, @NonNull WhatsappKeysManager keyManager) {
         this.configuration = configuration;
-        this.manager = WhatsappDataManager.newInstance();
+        this.manager = configuration.dataManager();
         this.socket = new WhatsappWebSocket(configuration, keyManager, manager);
     }
 

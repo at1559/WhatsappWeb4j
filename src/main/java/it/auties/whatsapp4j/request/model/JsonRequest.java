@@ -8,6 +8,7 @@ import it.auties.whatsapp4j.whatsapp.WhatsappConfiguration;
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.Session;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <M> the type of the model
  */
+@Slf4j
 public abstract non-sealed class JsonRequest<M extends JsonResponseModel> extends Request<List<Object>, M> {
     /**
      * An instance of Jackson's writer
@@ -55,6 +57,7 @@ public abstract non-sealed class JsonRequest<M extends JsonResponseModel> extend
             var body = buildBody();
             var json = JACKSON.writeValueAsString(body);
             var request = "%s,%s".formatted(tag, json);
+            log.info("WhatsappRequest:{}", request);
             if (configuration.async()) {
                 session.getAsyncRemote().sendObject(request, __ -> addRequest());
                 return future();

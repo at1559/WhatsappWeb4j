@@ -160,6 +160,7 @@ public class WhatsappWebSocket {
     private void sendChallenge(@NonNull TakeOverResponse response) {
         var challengeBase64 = response.challenge();
         if (challengeBase64 == null) {
+            log.info("connStatus, challengeBase64 is null,clientId:{}", whatsappKeys.clientId());
             return;
         }
 
@@ -196,6 +197,7 @@ public class WhatsappWebSocket {
     @OnMessage
     public void onText(@NonNull String data) {
         var response = Response.fromTaggedResponse(data);
+        log.info("onText,clientId:{}, tag:{}, desc:{}", whatsappKeys.clientId(), response.tag(), response.description());
         if (response instanceof JsonListResponse listResponse) {
             handleList(listResponse);
             return;
@@ -206,7 +208,7 @@ public class WhatsappWebSocket {
             return;
         }
 
-        if (whatsappManager.resolvePendingRequest(response.tag(), mapResponse)) {
+        if (privateWhatsappManager.resolvePendingRequest(response.tag(), mapResponse)) {
             return;
         }
 
@@ -241,7 +243,8 @@ public class WhatsappWebSocket {
 
         var decryptedMessage = CypherUtils.aesDecrypt(message, Objects.requireNonNull(whatsappKeys.encKey()));
         var response = new BinaryResponse(messageTag, decoder.decodeDecryptedMessage(decryptedMessage));
-        if (whatsappManager.resolvePendingRequest(response.tag(), response)) {
+        log.info("onBinary,clientId:{}, tag:{}", whatsappKeys.clientId(), messageTag);
+        if (privateWhatsappManager.resolvePendingRequest(response.tag(), response)) {
             return;
         }
         privateWhatsappManager.digestWhatsappNode(this, response.content());

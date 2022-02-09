@@ -37,7 +37,7 @@ public sealed abstract class Request<B, M extends ResponseModel> permits BinaryR
     /**
      * A singleton instance of WhatsappDataManager
      */
-    protected static final WhatsappDataManager MANAGER = WhatsappDataManager.singletonInstance();
+    protected @NonNull final WhatsappDataManager manager;
 
     /**
      * The non null tag of this request.
@@ -67,7 +67,7 @@ public sealed abstract class Request<B, M extends ResponseModel> permits BinaryR
      * @param configuration the configuration used for {@link WhatsappAPI}
      */
     protected Request(@NonNull String tag, @NonNull WhatsappConfiguration configuration){
-        this(tag, configuration, new CompletableFuture<>());
+        this(configuration.dataManager(), tag, configuration, new CompletableFuture<>());
     }
 
     /**
@@ -129,6 +129,6 @@ public sealed abstract class Request<B, M extends ResponseModel> permits BinaryR
             return;
         }
 
-        MANAGER.pendingRequests().add(this);
+        manager.pendingRequests().add(this);
     }
 }
